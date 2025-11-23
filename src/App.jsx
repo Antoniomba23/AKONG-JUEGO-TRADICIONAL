@@ -64,13 +64,13 @@ export default function AkongApp() {
       <div className="relative mx-auto max-w-7xl p-2 md:p-4 flex flex-col items-center min-h-screen z-10">
         
         {/* Header */}
-        <header className="w-full flex items-center justify-between mb-2 md:mb-4 border-b border-white/5 pb-3 md:pb-4 relative">
-          <div className="flex items-center gap-4">
-            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-amber-500 to-orange-700 rounded-xl shadow-lg flex items-center justify-center text-xl md:text-2xl font-black text-black">
+        <header className="w-full flex items-center justify-between mb-1 md:mb-4 border-b border-white/5 pb-2 md:pb-4 relative">
+          <div className="flex items-center gap-2 md:gap-4">
+            <div className="w-8 h-8 md:w-12 md:h-12 bg-gradient-to-br from-amber-500 to-orange-700 rounded-xl shadow-lg flex items-center justify-center text-lg md:text-2xl font-black text-black">
               A
             </div>
             <div>
-              <h1 className="text-2xl md:text-4xl font-black tracking-tight text-white">
+              <h1 className="text-xl md:text-4xl font-black tracking-tight text-white">
                 AKONG
               </h1>
               <p className="text-stone-500 text-[10px] md:text-xs uppercase tracking-widest font-bold mt-1 hidden md:block">{t.subtitle}</p>
