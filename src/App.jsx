@@ -10,6 +10,7 @@ export default function AkongApp() {
   const { board, turn, scores, gameStatus, winner, sow, resetGame, gameMode, setGameMode, lastSownIndex } = useAkongGame();
   const [showTutorial, setShowTutorial] = useState(false);
   const [language, setLanguage] = useState('es'); // 'es', 'en', 'fa'
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { playMoveSound, playCaptureSound, playWinSound } = useGameSounds();
 
   const t = translations[language];
@@ -60,23 +61,24 @@ export default function AkongApp() {
         <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-orange-900/20 rounded-full blur-[120px]" />
       </div>
 
-      <div className="relative mx-auto max-w-7xl p-6 flex flex-col items-center min-h-screen z-10">
+      <div className="relative mx-auto max-w-7xl p-2 md:p-4 flex flex-col items-center min-h-screen z-10">
         
         {/* Header */}
-        <header className="w-full flex items-center justify-between mb-12 border-b border-white/5 pb-6">
+        <header className="w-full flex items-center justify-between mb-2 md:mb-4 border-b border-white/5 pb-3 md:pb-4 relative">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-700 rounded-xl shadow-lg flex items-center justify-center text-2xl font-black text-black">
+            <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-amber-500 to-orange-700 rounded-xl shadow-lg flex items-center justify-center text-xl md:text-2xl font-black text-black">
               A
             </div>
             <div>
-              <h1 className="text-4xl font-black tracking-tight text-white">
+              <h1 className="text-2xl md:text-4xl font-black tracking-tight text-white">
                 AKONG
               </h1>
-              <p className="text-stone-500 text-xs uppercase tracking-widest font-bold mt-1">{t.subtitle}</p>
+              <p className="text-stone-500 text-[10px] md:text-xs uppercase tracking-widest font-bold mt-1 hidden md:block">{t.subtitle}</p>
             </div>
           </div>
           
-          <div className="flex gap-3 items-center">
+          {/* Desktop Controls */}
+          <div className="hidden md:flex gap-3 items-center">
             {/* Language Selector */}
             <select 
               value={language}
@@ -117,45 +119,70 @@ export default function AkongApp() {
               {t.buttons.reset}
             </button>
           </div>
+
+          {/* Mobile Hamburger Button */}
+          <button 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="md:hidden p-2 text-stone-300 hover:text-white transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+            </svg>
+          </button>
+
+          {/* Mobile Menu Overlay */}
+          {isMenuOpen && (
+            <div className="absolute top-full left-0 w-full bg-[#1a1a1a] border border-white/10 rounded-2xl p-4 shadow-2xl z-50 flex flex-col gap-4 md:hidden animate-in slide-in-from-top-5 duration-200">
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-stone-500 uppercase tracking-wider">Idioma</label>
+                <select 
+                  value={language}
+                  onChange={(e) => setLanguage(e.target.value)}
+                  className="w-full bg-[#252525] text-stone-300 text-sm font-bold uppercase tracking-wider border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-amber-500"
+                >
+                  <option value="es">Español</option>
+                  <option value="en">English</option>
+                  <option value="fa">Fang</option>
+                  <option value="fr">Français</option>
+                  <option value="pt">Português</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <label className="text-xs font-bold text-stone-500 uppercase tracking-wider">Modo de Juego</label>
+                <select 
+                  value={gameMode}
+                  onChange={(e) => {
+                    setGameMode(e.target.value);
+                    resetGame();
+                    setIsMenuOpen(false);
+                  }}
+                  className="w-full bg-[#252525] text-stone-300 text-sm font-bold uppercase tracking-wider border border-white/10 rounded-lg px-4 py-3 focus:outline-none focus:border-amber-500"
+                >
+                  <option value="pvp">{t.gameMode.pvp}</option>
+                  <option value="ai-easy">{t.gameMode.aiEasy}</option>
+                  <option value="ai-medium">{t.gameMode.aiMedium}</option>
+                </select>
+              </div>
+
+              <hr className="border-white/5 my-1" />
+
+              <button 
+                onClick={() => {
+                  setShowTutorial(true);
+                  setIsMenuOpen(false);
+                }}
+                className="w-full py-3 rounded-xl bg-white/5 hover:bg-white/10 text-stone-300 font-bold uppercase tracking-wider text-sm transition-all"
+              >
+                {t.buttons.tutorial}
+              </button>
+            </div>
+          )}
         </header>
 
         {/* Main Game Area */}
-        <main className="w-full flex-1 flex flex-col items-center justify-center gap-12">
+        <main className="w-full flex-1 flex flex-col items-center justify-center">
           
-          {/* Score Board */}
-          <div className="flex w-full max-w-4xl justify-between items-center px-12">
-            {/* Player B Score */}
-            <div className={`flex flex-col items-center transition-all duration-500 ${turn === 'B' ? 'opacity-100 scale-110' : 'opacity-40 grayscale'}`}>
-              <div className="relative">
-                <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-300 to-amber-600 drop-shadow-sm">
-                  {scores.B}
-                </div>
-                {turn === 'B' && gameStatus === 'playing' && (
-                  <div className="absolute -right-4 -top-2 w-3 h-3 bg-amber-500 rounded-full animate-ping" />
-                )}
-              </div>
-              <div className="mt-2 text-xs font-bold tracking-[0.2em] uppercase text-stone-500">{t.board.player} B</div>
-            </div>
-
-            {/* VS Badge */}
-            <div className="w-12 h-12 rounded-full bg-[#1a1a1a] border border-white/5 flex items-center justify-center shadow-xl">
-              <span className="text-stone-600 font-black text-xs">{t.board.vs}</span>
-            </div>
-
-            {/* Player A Score */}
-            <div className={`flex flex-col items-center transition-all duration-500 ${turn === 'A' ? 'opacity-100 scale-110' : 'opacity-40 grayscale'}`}>
-              <div className="relative">
-                <div className="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-b from-amber-300 to-amber-600 drop-shadow-sm">
-                  {scores.A}
-                </div>
-                {turn === 'A' && gameStatus === 'playing' && (
-                  <div className="absolute -right-4 -top-2 w-3 h-3 bg-amber-500 rounded-full animate-ping" />
-                )}
-              </div>
-              <div className="mt-2 text-xs font-bold tracking-[0.2em] uppercase text-stone-500">{t.board.player} A</div>
-            </div>
-          </div>
-
           {/* Board */}
           <div className="transform transition-all duration-700 hover:scale-[1.01]">
             <Board 

@@ -33,10 +33,10 @@ export function Board({ board, turn, onSow, gameStatus, t }) {
   const C2 = 7;
 
   return (
-    <div className="relative p-4 md:p-8">
+    <div className="relative p-1 md:p-2">
       {/* Board Container */}
       <div className={`
-        relative flex flex-row md:flex-col items-center gap-3 md:gap-6 bg-[#232323] p-4 md:p-8 rounded-[1.5rem] md:rounded-[2rem] shadow-[inset_0_0_30px_rgba(0,0,0,0.8)] border border-white/5
+        relative flex flex-row md:flex-col items-center gap-4 md:gap-8 bg-[#232323] p-6 md:p-12 rounded-[1.5rem] md:rounded-[2rem] shadow-[inset_0_0_30px_rgba(0,0,0,0.8)] border border-white/5
       `}>
         
         {/* Player B Section */}
